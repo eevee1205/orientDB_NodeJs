@@ -15,12 +15,16 @@ db.record.get('#18:0').then(function (record){    //orinedb 에 있는 선택한
 */
 
 /*
+ * CRUD 예제
+*/
+/*
 //CREATE
 var sql = 'SELECT * FROM topic';
 db.query(sql).then(function(results){
   console.log(results)
 });
-*/
+
+//OrientDB 에서의 SELECT
 var sql = 'SELECT FROM topic WHERE @rid=:rid' //조회조건 파라미터추가
 var param = {
   params:{  //params는 약속된 문법
@@ -29,4 +33,41 @@ var param = {
 };
 db.query(sql, param).then(function(results){ //조건으로 param 전달
   console.log(results)
+});
+
+
+//OrientDB 에서의 INSERT
+var sql = "INSERT INTO topic (title, description) VALUES(:title, :desc)"
+var param = {
+    params:{
+      title:'Express',
+      desc : 'Express Node FrameWork!!'
+    }
+}
+db.query(sql , param).then(function(results){
+  console.log(results);
+});
+
+
+//OrientDB 에서의 UPDATE
+var sql = "UPDATE topic SET title=:title WHERE @rid=:rid";
+var param = {
+  params:{
+    title:"Express Change",
+    rid: '#19:1'
+  }
+}
+db.query(sql, param).then(function(results){ //수정후 결과값은 몇개의 행이 수정됬는지 return
+  console.log(results);
+});
+*/
+
+var sql = "DELETE FROM topic WHERE @rid=:rid";
+var param = {
+  params:{
+    rid : '#18:1'
+  }
+}
+db.query(sql, param).then(function(results){ //수정후 결과값은 몇개의 행이 수정됬는지 return
+  console.log(results);
 });
