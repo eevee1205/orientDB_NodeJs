@@ -6,13 +6,19 @@ html
     h1
       a(href='/topic') Server Side JavaScript
     ul
-      each topic in topicList
+      each topic in topics
         li
           - rid = encodeURIComponent(topic['@rid'])
           a(href='/topic/'+rid)=topic.title
 
     artcle
-      h2= title
-      h3= description
+      if topic
+        h2= topic.title
+        h3= topic.description
+        if topic.author
+          div= 'writen by' + topic.author
+      else
+        h2  Welcome
+        | This is Main Page
     div
-      a(href='/topic/new') 글쓰기
+      a(href='/topic/add') 글쓰기
