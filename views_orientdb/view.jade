@@ -20,5 +20,13 @@ html
       else
         h2  Welcome
         | This is Main Page
-    div
-      a(href='/topic/add') 글쓰기
+    ul
+      li
+        a(href='/topic/add') 글쓰기
+      if topic
+        li
+          - rid = encodeURIComponent(topic['@rid'])
+          a(href='/topic/'+rid+'/edit') 수정
+        li
+          - rid = encodeURIComponent(topic['@rid'])
+          a(href='/topic/'+rid+'/delete') 삭제

@@ -24,7 +24,7 @@ app.listen(3000, function(){  //3000포트에 연결
   console.log('Conneted 3000 port!')
 });
 
-
+/*글쓰기*/
 app.get('/topic/add', function(req, res){
   var sql = "SELECT FROM topic";
   db.query(sql).then(function(topics){
@@ -36,7 +36,7 @@ app.get('/topic/add', function(req, res){
   });
 });
 
-
+//CREATE
 app.post('/topic/add' , function(req,res){
   var title = req.body.title;
   var description = req.body.description;
@@ -55,6 +55,8 @@ app.post('/topic/add' , function(req,res){
     res.redirect('/topic/'+encodeURIComponent(results[0]))
   });
 });
+
+//READ
 app.get(['/topic', '/topic/:id'], function(req, res){ //2가지 routing 을 하나의 함수로
   var sql = "SELECT FROM topic";
   db.query(sql).then(function(topics){
@@ -72,4 +74,68 @@ app.get(['/topic', '/topic/:id'], function(req, res){ //2가지 routing 을 하�
 
   });
 
+});
+
+//UPDATE 화면이동
+app.get(['/topic/:id/edit'], function(req, res){
+  var sql = "SELECT FROM topic";
+  db.query(sql).then(function(topics){
+    var id = req.params.id;
+    if(id){
+      var sql = "SELECT FROM topic where @rid=:rid";
+      db.query(sql, {params:{rid:id}}).then(function(topic){
+        //res.render('view' , {topicList:topics}) //결과를 view.jade 로 전달
+        res.render('edit' , {topics:topics , topic:topic[0]});
+      });
+    }else{
+        res.render('view' , {topics:topics});
+    }
+  });
+});
+
+//UPDATE 실행
+app.post(['/topic/:id/edit'], function(req, res){
+  var sql = "UPDATE topic SET title=:title , description=:description , author=:author WHERE @rid=:rid";
+  var id = req.params.id;
+  var title = req.body.title;
+  var description = req.body.description;
+  var author = req.body.author;
+
+  var param = {
+    params:{title:title , description:description , author : author , rid : id}
+  }
+  db.query(sql , param).then(function(topics){
+      res.redirect('/topic/' + encodeURIComponent(id));
+  });
+});
+
+//DELETE 화면
+app.get(['/topic/:id/delete'], function(req, res){
+  var sql = "SELECT FROM topic";
+  db.query(sql).then(function(topics){
+    var id = req.params.id;
+    if(id){
+      var sql = "SELECT FROM topic where @rid=:rid";
+      db.query(sql, {params:{rid:id}}).then(function(topic){
+        //res.render('view' , {topicList:topics}) //결과를 view.jade 로 전달
+        res.render('delete' , {topics:topics , topic:topic[0]});
+      });
+    }else{
+        res.render('view' , {topics:topics});
+    }
+  });
+});
+
+//DELETE 실행
+app.post('/topic/:id/delete' , function(req,res){
+  var sql = "DELETE FROM topic WHERE @rid=:rid";
+  var id = req.params.id;
+  var param = {
+    params:{
+      rid: id}
+  }
+  db.query(sql , param).then(function(results){
+    //res.send(results);
+    res.redirect('/topic/');
+  });
 });
